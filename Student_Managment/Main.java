@@ -2,7 +2,7 @@ package Student_Managment;
 import java.util.*;
 import java.io.*;
 class Student implements Serializable{
-    private static final long serialVersionUId = 1L;
+    private static final long serialVersionUID = 1L;
     private transient Scanner sc = new Scanner(System.in);
     private int rollNo,total;
     private String Name,status,Grade;
@@ -104,30 +104,44 @@ public class Main{
             System.out.print("||=======Student Managment System=======||");
             System.out.print("\n1. Add student");
             System.out.print("\n2. View all students");
-            System.out.print("\n3. View student by Roll No");
-            System.out.print("\n4. Update student");
-            System.out.print("\n5. Delete a student details");
-            System.out.print("\n6. Exit");
+            System.out.print("\n3. Top Scorer");
+            System.out.print("\n4. Sort Students By Mark");
+            System.out.print("\n5. Search student by Roll No");
+            System.out.print("\n6. Search student by Name");
+            System.out.print("\n7. Update student");
+            System.out.print("\n8. Delete a student details");
+            System.out.print("\n9. Exit");
             System.out.print("\nEnter your choice: ");
             int choice = sc.nextInt();
             switch(choice){
                 case 1:
                     addStudentDetails();
+                    saveData();
                     break;
                 case 2:
                     viewStudents();
                     break;
                 case 3:
-                    searchStudent();
+                    topScorer();
                     break;
                 case 4:
-                    updateStudent();
+                    sortByMarks();
                     break;
                 case 5:
-                    deleteStudent();
+                    searchStudentByRollNo();
                     break;
                 case 6:
+                    searchStudentByName();
+                    break;
+                case 7:
+                    updateStudent();
                     saveData();
+                    break;
+                case 8:
+                    deleteStudent();
+                    saveData();
+                    break;
+                case 9:
                     System.out.println("Exiting....");
                     return;
                 default:
@@ -162,11 +176,37 @@ public class Main{
             System.out.println("______________________");
         }
     }
-    public static void searchStudent(){
-        System.out.print("Enter the Student Roll No: ");
-        int r = sc.nextInt();
+    public static void topScorer(){
+        if(students.isEmpty()){
+            System.out.println("No Student Found");
+            return;
+        }
+        Student topper = students.get(0);
         for(Student s : students){
-            if(s.getRollNo()==r){
+            if(s.getTotal()>topper.getTotal()){
+                topper = s;
+            }
+        }
+        System.out.println("||TOPPER OF SCHOOL||");
+        topper.display();
+    }
+    public static void searchStudentByName(){
+        sc.nextLine();
+        System.out.print("Enter Student Name: ");
+        String name = sc.nextLine();
+        for(Student s : students){
+            if(s.getName().equalsIgnoreCase(name)){
+                System.out.println("Student Found\n");
+                s.display();
+                return;
+            }
+        }
+        System.out.println("Student not Found");
+    }
+    public static void searchStudentByRollNo(){
+        System.out.print("Enter the Student Roll No: ");
+        for(Student s : students){
+            if(s.getRollNo()==sc.nextInt()){
                 System.out.println("\nStudent Found\n");
                 s.display();
                 return;
@@ -197,7 +237,7 @@ public class Main{
                         System.out.println("\nUpdated Successfully");
                         break;
                     case 2:
-                    sc.nextLine();
+                        sc.nextLine();
                         System.out.print("Enter the new Name: ");
                         Name = sc.nextLine();
                         s.setName(Name);
@@ -251,6 +291,14 @@ public class Main{
             s.setParticularMark();
         }
     }
+    public static void sortByMarks(){
+        students.sort((s1,s2) -> Integer.compare(s2.getTotal(),s1.getTotal()));
+        System.out.println("||Students Sorted according to Total Marks||\n");
+        for(Student s : students){
+            s.display();
+            System.out.println("______________________");
+        }
+    }
     public static void saveData(){
         try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("students.dat"))){
             out.writeObject(students);
@@ -266,5 +314,4 @@ public class Main{
             students = new ArrayList<>();
         }
     }
-
 }
