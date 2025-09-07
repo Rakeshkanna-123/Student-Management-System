@@ -75,24 +75,30 @@ class Student implements Serializable{
                             +"\nGrade: "+this.Grade);
     }
     public void statusAndGrade(){
-           this.status = this.total>=200 ? "PASS" : "FAIL";
-           if(this.total<200){
-                this.Grade="D";
-           }else if(this.total<250){
-                this.Grade="C";
-           }else if(this.total<300){
-                this.Grade="C+";
-           }else if(this.total<350){
-                this.Grade="B";
-           }else if(this.total<400){
-                this.Grade="B+";
-           }else if(this.total<450){
-                this.Grade="A";
-           }else if(this.total<475){
-                this.Grade="A+";
-           }else{
-                this.Grade="O";
-           }
+        boolean flag = true;
+        for(int i=0;i<5;i++){
+            if(this.marks[i]<40){
+                flag = false;
+            }
+        }
+        this.status = (flag == true) ? "PASS" : "FAIL";
+        if(this.status.equalsIgnoreCase("fail")){
+            this.Grade="D";
+        }else if(this.total<250){
+            this.Grade="C";
+        }else if(this.total<300){
+            this.Grade="C+";
+        }else if(this.total<350){
+            this.Grade="B";
+        }else if(this.total<400){
+            this.Grade="B+";
+        }else if(this.total<450){
+            this.Grade="A";
+        }else if(this.total<475){
+            this.Grade="A+";
+        }else{
+            this.Grade="O";
+        }
     }
 }
 public class Main{
@@ -101,17 +107,18 @@ public class Main{
     public static void main(String[] args) {
         loadData();
         while(true){
-            System.out.print("||=======Student Managment System=======||");
-            System.out.print("\n1. Add student");
-            System.out.print("\n2. View all students");
-            System.out.print("\n3. Top Scorer");
-            System.out.print("\n4. Sort Students By Mark");
-            System.out.print("\n5. Search student by Roll No");
-            System.out.print("\n6. Search student by Name");
-            System.out.print("\n7. Update student");
-            System.out.print("\n8. Delete a student details");
-            System.out.print("\n9. Exit");
-            System.out.print("\nEnter your choice: ");
+            System.out.println("||=======Student Managment System=======||");
+            System.out.println("1. Add Student");
+            System.out.println("2. View all Students");
+            System.out.println("3. Top Scorer");
+            System.out.println("4. Sort Students By Mark");
+            System.out.println("5. Search Student by Roll No");
+            System.out.println("6. Search Student by Name");
+            System.out.println("7. Update Student");
+            System.out.println("8. Delete a Student Details");
+            System.out.println("9. Delete All Student Details");
+            System.out.println("10. Exit");
+            System.out.print("Enter your choice: ");
             int choice = sc.nextInt();
             switch(choice){
                 case 1:
@@ -142,6 +149,10 @@ public class Main{
                     saveData();
                     break;
                 case 9:
+                    deleAllStudent();
+                    saveData();
+                    break;
+                case 10:
                     System.out.println("Exiting....");
                     return;
                 default:
@@ -282,6 +293,17 @@ public class Main{
             return;
         }
         System.out.println("Not Found");
+    }
+    public static void deleAllStudent(){
+        sc.nextLine();
+        System.out.print("Are You sure about Deleting All Students Details ?(YES or NO): ");
+        String choice = sc.nextLine();
+        if(choice.equalsIgnoreCase("no")){
+            System.out.println("Deletion Cancelled");
+            return;
+        }
+        students.removeAll(students);
+        System.out.println("Details Cleared Successfully");
     }
     public static void updateMarks(Student s){
         System.out.print("Do you want to update all Marks?(1 for YES, 0 for NO): ");
